@@ -2,9 +2,11 @@
 
 Small, inspectable experiments in recursive self-improvement.
 
-Both notebooks are self-contained and use Python's standard library. No local
-Python modules are needed. Open them in Jupyter or VS Code with a Python 3.10+
-kernel and run the cells from top to bottom.
+Both notebooks are self-contained; no local Python modules are needed. The
+deterministic reference uses Python's standard library. The Gemini experiment uses
+the official `google-genai` SDK and includes a package-install cell for Colab.
+Open them in Colab, Jupyter, or VS Code with a Python 3.10+ kernel and run the cells
+from top to bottom.
 
 | Notebook | Open in Colab | Purpose |
 |---|---|---|
@@ -16,6 +18,19 @@ kernel and run the cells from top to bottom.
 The notebook kernel must inherit `GEMINI_API_KEY` or `GOOGLE_API_KEY` from your
 environment; the former takes precedence. Do not paste credentials into notebook
 cells. Optionally set `GEMINI_MODEL`; the default is `gemini-3.8-flash`.
+
+In Colab, you can add `GEMINI_API_KEY` to the Secrets panel, enable notebook access,
+and populate the environment before running the Gemini cells:
+
+```python
+import os
+from google.colab import userdata
+os.environ["GEMINI_API_KEY"] = userdata.get("GEMINI_API_KEY")
+```
+
+Gemini calls use `genai.Client(...).models.generate_content(...)` with a JSON
+schema. The SDK is configured with a 45-second timeout and one attempt, preserving
+the experiment's no-retry behavior. See the [SDK documentation](https://googleapis.github.io/python-genai/).
 
 Rerunning the Gemini notebook makes paid or quota-consuming API requests and sends
 synthetic task inputs and feedback to Google's API. It caps model calls at 24 and
@@ -37,7 +52,7 @@ improver; it proposes JSON edits rather than executing invoices or writing code.
 The interpreter, reference calculation, and acceptance rule stay fixed. Generated
 strings are never executed as Python.
 
-The saved live run on October 5, 2026 used 12 Gemini calls and 12,055 reported
+The saved SDK run on October 5, 2026 used 12 Gemini calls and 12,036 reported
 tokens. Its selected policy changed the allowed fields per candidate from one to
 three. After one candidate evaluation, the resulting agent scored 100% on four
 held-out invoices, compared with 25% using the initial improvement policy.
