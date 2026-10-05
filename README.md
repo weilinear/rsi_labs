@@ -6,10 +6,10 @@ Both notebooks are self-contained and use Python's standard library. No local
 Python modules are needed. Open them in Jupyter or VS Code with a Python 3.10+
 kernel and run the cells from top to bottom.
 
-| Notebook | Purpose |
-|---|---|
-| [Deterministic reference](self_improvement.ipynb) | Demonstrates output refinement, persistent agent improvement, and improvement-policy evolution without an LLM or network access. |
-| [Gemini experiment](gemini_self_improvement.ipynb) | Uses a fixed Gemini model to propose structured edits, with independent Python execution and evaluation. Contains captured live outputs. |
+| Notebook | Open in Colab | Purpose |
+|---|---|---|
+| [Deterministic reference](self_improvement.ipynb) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/weilinear/rsi_labs/blob/main/self_improvement.ipynb) | Demonstrates output refinement, persistent agent improvement, and improvement-policy evolution without an LLM or network access. |
+| [Gemini experiment](gemini_self_improvement.ipynb) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/weilinear/rsi_labs/blob/main/gemini_self_improvement.ipynb) | Uses a fixed Gemini model to propose structured edits, with independent Python execution and evaluation. Contains captured live outputs. |
 
 ## Gemini setup
 
