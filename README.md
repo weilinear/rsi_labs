@@ -15,18 +15,18 @@ from top to bottom.
 
 ## Gemini setup
 
-The notebook kernel must inherit `GEMINI_API_KEY` or `GOOGLE_API_KEY` from your
-environment; the former takes precedence. Do not paste credentials into notebook
-cells. Optionally set `GEMINI_MODEL`; the default is `gemini-3.8-flash`.
-
-In Colab, you can add `GEMINI_API_KEY` to the Secrets panel, enable notebook access,
-and populate the environment before running the Gemini cells:
+In Colab, add `GOOGLE_API_KEY` to the Secrets panel and enable notebook access.
+The notebook includes a setup cell that loads it with:
 
 ```python
 import os
 from google.colab import userdata
-os.environ["GEMINI_API_KEY"] = userdata.get("GEMINI_API_KEY")
+os.environ["GOOGLE_API_KEY"] = userdata.get('GOOGLE_API_KEY')
 ```
+
+Do not paste credentials into notebook cells. For local Jupyter, skip the Colab
+secret-loading cell and set `GOOGLE_API_KEY` in the kernel environment. Optionally
+set `GEMINI_MODEL`; the default is `gemini-3.8-flash`.
 
 Gemini calls use `genai.Client(...).models.generate_content(...)` with a JSON
 schema. The SDK is configured with a 45-second timeout and one attempt, preserving
