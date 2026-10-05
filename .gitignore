@@ -1,0 +1,7 @@
+toy_artifacts/
+gemini_artifacts/
+replay_artifacts/
+.ipynb_checkpoints/
+__pycache__/
+.env
+.env.*
