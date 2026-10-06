@@ -4,12 +4,47 @@ Small, inspectable experiments in agent self-improvement.
 
 | Notebook | Open in Colab | Purpose |
 |---|---|---|
+| [Bill action policies](bill_policy_comparison.ipynb) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/weilinear/rsi_labs/blob/main/bill_policy_comparison.ipynb) | Harder receipts, HIGH internal calculation, LOW optional tool use, and LOW explicit delegation. |
 | [LOW thinking: bill splitting](trajectory_improvement_low_thinking.ipynb) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/weilinear/rsi_labs/blob/main/trajectory_improvement_low_thinking.ipynb) | LOW rerun, separate thinking tokens, tool ablation, and an optional tool chosen from observed arithmetic failures. |
 | [LOW thinking: grocery replenishment](grocery_replenishment_low_thinking.ipynb) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/weilinear/rsi_labs/blob/main/grocery_replenishment_low_thinking.ipynb) | LOW rerun and LOW/MEDIUM comparison with a Gemini-written subtotal calculator. |
 | [Grocery replenishment](grocery_replenishment.ipynb) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/weilinear/rsi_labs/blob/main/grocery_replenishment.ipynb) | Real retailer listing evidence; propose an acceptable cheaper refill and improve instructions or memory from observed responses. |
 | [Trajectory-based improvement](trajectory_improvement.ipynb) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/weilinear/rsi_labs/blob/main/trajectory_improvement.ipynb) | A fixed improver uses observed bill-solving trajectories to choose instructions, a tool, or no change; compares future task accuracy. |
 | [Restaurant-bill agent](gemini_self_improvement.ipynb) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/weilinear/rsi_labs/blob/main/gemini_self_improvement.ipynb) | Gemini learns a user's tip convention, writes a calculator and a simpler wrapper, then revises its improvement policy. |
 | [Earlier deterministic reference](self_improvement.ipynb) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/weilinear/rsi_labs/blob/main/self_improvement.ipynb) | The original invoice example, without a model or network access. |
+
+## Bill action policies
+
+`bill_policy_comparison.ipynb` uses 56 synthetic receipts: longer itemized group
+bills, fractional rates, receipt discounts, and an ordinary 11% tax / 15% tip
+group. There are 24 development and 32 held-out receipts, with two attempts each.
+One old failure is a labeled development regression. The ordinary-rate group was
+requested during execution and tested separately on frozen policies; no cases
+were selected for failures. A rational Fraction oracle independently checks the
+Gemini-written Decimal calculator.
+
+LOW/no-tool made one development arithmetic error (USD 194.22 instead of 185.43).
+All four policies passed all 64 held-out attempts, so no held-out accuracy gain
+was established. A fixed improver chose to write a tool. Both tool arms use that
+same validated function; the explicit delegation instruction is a manually
+specified comparison policy. Unlike the earlier pilot, tool calls no longer
+require a prose calculation, reducing duplicated work.
+
+| Held-out policy | Correct | Tool calls | Reported thinking tokens | Total tokens |
+|---|---:|---:|---:|---:|
+| LOW, no tool | 64/64 | 0 | 40,815 | 65,092 |
+| HIGH, no tool | 64/64 | 0 | 287,357 | 311,542 |
+| LOW, optional tool | 64/64 | 60 | 6,685 | 46,371 |
+| LOW, explicit delegation | 64/64 | 64 | 457 | 42,175 |
+
+Explicit delegation saved 9.0% total tokens versus optional tool use and 86.5%
+versus HIGH/no-tool. The former fixes LOW and the tool; the latter changes both
+resource allocation and tool access. It is not an equal-compute comparison.
+Creation cost 21,758 tokens, repaid after about 61 receipts at the observed saving
+versus LOW/no-tool, or 153 including candidate development evaluation. The full
+research comparison cost 884,353 reported tokens across 449 calls. No requests
+or executions failed. Missing thought counts stay null; input/output/total counts
+reconcile with reported thinking or zero residuals for omitted thought fields.
+The fixed improver did not modify itself; recursion remains deferred.
 
 ## Thinking versus writing tools
 
