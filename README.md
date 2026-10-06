@@ -4,10 +4,46 @@ Small, inspectable experiments in agent self-improvement.
 
 | Notebook | Open in Colab | Purpose |
 |---|---|---|
+| [LOW thinking: bill splitting](trajectory_improvement_low_thinking.ipynb) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/weilinear/rsi_labs/blob/main/trajectory_improvement_low_thinking.ipynb) | LOW rerun, separate thinking tokens, tool ablation, and an optional tool chosen from observed arithmetic failures. |
+| [LOW thinking: grocery replenishment](grocery_replenishment_low_thinking.ipynb) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/weilinear/rsi_labs/blob/main/grocery_replenishment_low_thinking.ipynb) | LOW rerun and LOW/MEDIUM comparison with a Gemini-written subtotal calculator. |
 | [Grocery replenishment](grocery_replenishment.ipynb) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/weilinear/rsi_labs/blob/main/grocery_replenishment.ipynb) | Real retailer listing evidence; propose an acceptable cheaper refill and improve instructions or memory from observed responses. |
 | [Trajectory-based improvement](trajectory_improvement.ipynb) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/weilinear/rsi_labs/blob/main/trajectory_improvement.ipynb) | A fixed improver uses observed bill-solving trajectories to choose instructions, a tool, or no change; compares future task accuracy. |
 | [Restaurant-bill agent](gemini_self_improvement.ipynb) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/weilinear/rsi_labs/blob/main/gemini_self_improvement.ipynb) | Gemini learns a user's tip convention, writes a calculator and a simpler wrapper, then revises its improvement policy. |
 | [Earlier deterministic reference](self_improvement.ipynb) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/weilinear/rsi_labs/blob/main/self_improvement.ipynb) | The original invoice example, without a model or network access. |
+
+## Thinking versus writing tools
+
+The new LOW-thinking notebooks preserve the original tasks, sources and evaluator.
+They record input, final output, thinking and total token counts, tool calls,
+proposal cost and failures. Missing usage stays missing. A fresh MEDIUM comparison
+uses the same model. Tools run through a simple JSON action protocol: execution
+returns the final numeric result directly, without another LLM synthesis call.
+A more general agent would have additional tool-result and synthesis overhead.
+The bill schema still asks for a calculation summary and amount on tool calls;
+some responses calculate alongside calling the tool. This measures the observed
+policy, not maximal arithmetic offloading. Local Python execution costs CPU time,
+not Gemini tokens.
+
+The bill policy made two genuine arithmetic mistakes in 144 LOW development
+attempts. Given that expanded development evidence, the fixed improver voluntarily
+wrote a calculator. It passed 48/48 development and 48/48 held-out attempts.
+Original LOW also passed 48/48 held-out. The tool policy reduced held-out total
+tokens from 17,765 to 16,393 (7.7%), while creation cost 40,335 tokens: about 1,412
+future bills to repay creation alone at the observed savings. Merely offering a
+tool with the original instruction used more tokens, so the policy matters too.
+
+LOW grocery exposed one arithmetic error during development. Its instruction /
+memory proposal fixed development but mishandled missing substitution approval
+on held-out requests (6/8 versus original 8/8). The explicitly requested shopping
+calculator passed 8/8 held-out, but used 15,222 versus 13,201 LOW tokens (15.3%
+more), plus 4,270 creation tokens. It was not an efficiency improvement.
+
+MEDIUM bill no-tool had four HTTP 503 failures and six read timeouts; MEDIUM
+grocery tool-available had three read timeouts. Their usage totals are incomplete,
+so no equal-work cost claim is made from those totals. The notebooks preserve
+all failures. Together the experiments attempted 646 calls and returned 506,681
+reported tokens. These small pilots do not establish accuracy gains, general
+shopping usefulness or recursive self-improvement. LOW still permits thinking.
 
 ## Grocery replenishment: approximate the real problem
 
