@@ -4,10 +4,42 @@ Small, inspectable experiments in agent self-improvement.
 
 | Notebook | Open in Colab | Purpose |
 |---|---|---|
+| [Trajectory-based improvement](trajectory_improvement.ipynb) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/weilinear/rsi_labs/blob/main/trajectory_improvement.ipynb) | A fixed improver uses observed bill-solving trajectories to choose instructions, a tool, or no change; compares future task accuracy. |
 | [Restaurant-bill agent](gemini_self_improvement.ipynb) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/weilinear/rsi_labs/blob/main/gemini_self_improvement.ipynb) | Gemini learns a user's tip convention, writes a calculator and a simpler wrapper, then revises its improvement policy. |
 | [Earlier deterministic reference](self_improvement.ipynb) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/weilinear/rsi_labs/blob/main/self_improvement.ipynb) | The original invoice example, without a model or network access. |
 
-## Restaurant-bill example
+## Trajectory-based improvement
+
+Start with `trajectory_improvement.ipynb` for the measured improvement experiment.
+It uses 48 synthetic bills, a stratified 24/24 development and held-out split,
+and two attempts per bill. Tipping and rounding rules are explicit. The fixed
+improver receives development trajectories only and proposes either an
+instruction-only change or an open choice that may write a calculator. No repair
+labels or manufactured model failures are supplied. No recursive improvement is
+attempted.
+
+All three versions use one model call per bill. For a tool request, the fixed
+harness executes Gemini's chosen arguments and returns the tool result directly;
+there is no additional model narration. Candidates are retained only after a
+strict development-accuracy gain; held-out scores never select a version. Ties
+are reported as no demonstrated accuracy improvement. Ordinary currency prefixes
+are normalized before comparison, so formatting is not mislabeled as arithmetic.
+
+Each full run makes up to 290 model calls, without retries. Latency and token
+counts include proposal and evaluation calls in the complete experiment record.
+Requests have a 45-second timeout. API failures are flagged separately. Saved
+outputs contain the measured score summaries; complete trajectory records remain
+in the notebook session as `experiment`. Repeats are not independent new bills.
+
+The recorded run used `gemini-3.8-flash`: the original scored **96/96** across
+48 distinct bills. Both proposals chose **no change**; all 192 re-evaluation
+attempts also passed. No calculator was written or used. There was no demonstrated
+accuracy improvement, and this run is not a manual-versus-tool ablation. The
+complete run used 290 calls and 220,109 reported tokens, excluding four preliminary
+smoke-test calls. The notebook includes an expandable record of all trajectories
+and both proposals, in addition to concise score summaries.
+
+## Earlier restaurant-bill demonstration
 
 The notebook is self-contained. It uses the official `google-genai` SDK and has a
 package-install cell. In Colab, add `GOOGLE_API_KEY` to **Secrets**, enable notebook
