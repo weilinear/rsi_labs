@@ -4,9 +4,54 @@ Small, inspectable experiments in agent self-improvement.
 
 | Notebook | Open in Colab | Purpose |
 |---|---|---|
+| [Grocery replenishment](grocery_replenishment.ipynb) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/weilinear/rsi_labs/blob/main/grocery_replenishment.ipynb) | Real retailer listing evidence; propose an acceptable cheaper refill and improve instructions or memory from observed responses. |
 | [Trajectory-based improvement](trajectory_improvement.ipynb) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/weilinear/rsi_labs/blob/main/trajectory_improvement.ipynb) | A fixed improver uses observed bill-solving trajectories to choose instructions, a tool, or no change; compares future task accuracy. |
 | [Restaurant-bill agent](gemini_self_improvement.ipynb) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/weilinear/rsi_labs/blob/main/gemini_self_improvement.ipynb) | Gemini learns a user's tip convention, writes a calculator and a simpler wrapper, then revises its improvement policy. |
 | [Earlier deterministic reference](self_improvement.ipynb) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/weilinear/rsi_labs/blob/main/self_improvement.ipynb) | The original invoice example, without a model or network access. |
+
+## Grocery replenishment: approximate the real problem
+
+`grocery_replenishment.ipynb` uses ten public Target product pages retrieved on
+October 6, 2026. It captures observed package sizes, variants, displayed prices,
+and real gaps such as store-specific stock, incomplete promotions, and a title /
+highlight conflict. Listing summaries include source URLs. No fees, checkout
+quotes, or personal purchase history are invented.
+
+The example shopper and eight shopping requests are illustrative. Four requests
+are development cases, four are held out, and each gets two attempts. The first
+version uses one retailer and three staple categories, so it avoids inventing a
+complete multi-store market. Captured prices may come from cached pages and are
+not guaranteed current. Human annotations check a limited proxy: acceptable
+products, whole packs, sufficient quantities, evidence-linked price arithmetic,
+and appropriate uncertainty or substitution questions. Any supported cheaper
+candidate can succeed; there is no globally optimal target basket. Read the
+actual explanations as well as the score. No purchases are made, and estimated
+item-price savings are not verified checkout savings.
+
+The fixed improver proposes task instructions and procedural memory from real
+development responses. It can choose no change. Model, evidence, rubric, and
+harness remain fixed; tool writing and recursion are deferred. Candidate retention
+requires a strict development rubric gain without API failures. Both frozen
+versions are then evaluated on held-out requests. The complete pilot attempts 33
+model calls, with a 90-second timeout, two workers, and no automatic retries.
+Reported tokens cover only calls for which the API returned usage. The notebook
+preserves expandable evidence and trajectories.
+
+An initial pilot is excluded from improvement claims: it had API failures and an
+overly strict uncertainty-checklist gate. A missing checklist word could fail an
+otherwise qualified and correct basket recommendation. We separated checklist
+completeness from shopping correctness before the fresh comparison; equivalent
+Target URLs for the same product are also accepted. The rubric and its limitations
+are explicit, and the initial record is preserved for inspection.
+
+Recorded fresh pilot: original held-out basket checks **8/8**, candidate **5/8**
+with three failed/incomplete requests. Every completed recommendation passed
+the limited basket checks, so no policy gain was established; the original
+was retained. The fresh run attempted 33 calls and returned 141,568 reported
+tokens. The excluded first pass attempted another 33 calls and returned 90,424
+reported tokens. Request/execution failures are reported separately from basket
+errors. This is preliminary evidence about an illustrative shopping task, not
+user acceptance, verified checkout savings, or broad self-improvement.
 
 ## Trajectory-based improvement
 
